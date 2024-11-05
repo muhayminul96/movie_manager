@@ -8,4 +8,5 @@ urlpatterns = [
     path('ratings/<int:pk>/', views.RatingView.as_view(), name='rating-detail-update'),
     path('reports/', views.ReportView.as_view(), name='report-list-create'),
     path('reports/<int:pk>/', views.ReportView.as_view(), name='report-detail-update'),
+    path('login/', views.LoginView.as_view(), name='login'),
 ]

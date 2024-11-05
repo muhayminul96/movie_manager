@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,16 @@ SECRET_KEY = 'django-insecure-m$a*=#((d%!765$-pqg=)uc#cgw!()evsc3+=c$4@6&hi%kzab
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Only authenticated users can access views by default
+    ],
+}
+
 
 
 # Application definition
@@ -53,6 +64,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'movieManager.urls'
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+AUTHENTICATION_BACKENDS = [
+    'movie_app.backends.EmailOrUsernameBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 TEMPLATES = [
     {

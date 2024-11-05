@@ -33,6 +33,20 @@ class Rating(models.Model):
         # Call clean() to enforce validation before saving
         self.clean()
         super().save(*args, **kwargs)
+        self.update_movie_rating()
+
+    def update_movie_rating(self):
+        movie = self.movie
+        ratings = movie.ratings.all()
+        if ratings.exists():
+            total_ratings = ratings.count()
+            avg_rating = sum(r.rating for r in ratings) / total_ratings
+            movie.total_rating = total_ratings
+            movie.avg_rating = round(avg_rating, 2)
+        else:
+            movie.total_rating = 0
+            movie.avg_rating = 0.0
+        movie.save()
 
 
 class Report(models.Model):
