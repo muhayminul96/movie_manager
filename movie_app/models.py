@@ -24,7 +24,7 @@ class Rating(models.Model):
 
 
     def __str__(self):
-        return movie.name + " " + self.rating;
+        return f"{self.movie.name} - Rating: {self.rating}"
     def clean(self):
         if not (1.0 <= self.rating <= 5.0):
             raise ValidationError("Rating must be between 1 and 5.")
