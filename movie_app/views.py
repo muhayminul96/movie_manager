@@ -5,14 +5,35 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from .models import Movie, Rating, Report
+from django.contrib.auth.models import User
 from .serializers import MovieSerializer,RatingSerializer, ReportSerializer ,UserSerializer
 from django.shortcuts import get_object_or_404
 
 
+
+class UserView(APIView):
+    def get(self, request):
+        # Retrieve all users
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # Create a new user
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            User.objects.create_user(
+                username=serializer.validated_data['username'],
+                password=request.data.get('password'),  # Accept password separately
+                email=serializer.validated_data.get('email', '')
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class LoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
-        username = request.data.get('username')
+        username = request.data.get('username') or request.data.get('email')
         password = request.data.get('password')
 
         # Authenticate user (username could be either email or username)
