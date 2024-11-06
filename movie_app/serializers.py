@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email']
 
 class MovieSerializer(serializers.ModelSerializer):
-    created_by = serializers.ReadOnlyField()
+    created_by = serializers.ReadOnlyField(source='created_by.id')
     class Meta:
         model = Movie
         fields = ['id', 'name', 'description', 'released_at', 'duration', 'genre', 'created_by', 'avg_rating', 'total_rating', 'language']
