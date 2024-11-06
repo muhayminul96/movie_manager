@@ -85,6 +85,11 @@ class RatingView(APIView):
     def put(self, request, pk):
         # Update an existing rating
         rating = get_object_or_404(Rating, pk=pk)
+        # Check if the user is the creator of the movie
+        if movie.created_by != request.user:
+            return Response({"detail": "You do not have permission to update this movie."},
+                            status=status.HTTP_403_FORBIDDEN)
+
         serializer = RatingSerializer(rating, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -116,11 +121,4 @@ class ReportView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, pk):
-        # Update an existing report
-        report = get_object_or_404(Report, pk=pk)
-        serializer = ReportSerializer(report, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
